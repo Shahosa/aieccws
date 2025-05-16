@@ -1,0 +1,2 @@
+# aieccws
+AI Workshop Material 
