@@ -1,0 +1,100 @@
+{
+  "info": {
+    "name": "RAG Lab API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Check Model Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://<your-api-endpoint>/status",
+          "protocol": "http",
+          "host": [
+            "<your-api-endpoint>"
+          ],
+          "path": [
+            "status"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Upload Documents",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "multipart/form-data"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "files",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://<your-api-endpoint>/upload",
+          "protocol": "http",
+          "host": [
+            "<your-api-endpoint>"
+          ],
+          "path": [
+            "upload"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Ask a Question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"question\": \"What is the document about?\"\n}"
+        },
+        "url": {
+          "raw": "http://<your-api-endpoint>/query",
+          "protocol": "http",
+          "host": [
+            "<your-api-endpoint>"
+          ],
+          "path": [
+            "query"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Fun Prompt",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://<your-api-endpoint>/fun-prompt",
+          "protocol": "http",
+          "host": [
+            "<your-api-endpoint>"
+          ],
+          "path": [
+            "fun-prompt"
+          ]
+        }
+      }
+    }
+  ]
+}
