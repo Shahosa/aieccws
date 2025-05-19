@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RAG Lab Assistant</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #1e1e1e; color: #eee; }
+    input, textarea, button, select { width: 100%; margin: 10px 0; padding: 10px; font-size: 1em; }
+    label { font-weight: bold; margin-top: 20px; display: block; }
+    .response { background: #2d2d2d; padding: 10px; border-radius: 5px; white-space: pre-wrap; }
+    .inline { display: inline-block; width: auto; margin-right: 10px; }
+  </style>
+</head>
+<body>
+  <h1>🧠 RAG Lab Assistant</h1>
+
+  <form id="uploadForm">
+    <label for="file">📄 Upload Text File(s)</label>
+    <input type="file" id="file" name="files" multiple />
+    <button type="submit">Upload</button>
+  </form>
+
+  <label for="examples">💡 Prompt Examples</label>
+  <select id="examples">
+    <option disabled selected>Select an example...</option>
+    <option value="Summarize the uploaded document.">Summarize the uploaded document.</option>
+    <option value="What does the document say about data privacy?">What does the document say about data privacy?</option>
+    <option value="List key design decisions mentioned.">List key design decisions mentioned.</option>
+    <option value="Extract key takeaways for stakeholders.">Extract key takeaways for stakeholders.</option>
+  </select>
+
+  <label for="prompt">💬 Enter Your Prompt</label>
+  <textarea id="prompt" rows="4" placeholder="e.g., What does this architecture include?"></textarea>
+  <button onclick="submitPrompt()">Send to LLM</button>
+
+  <h3>🧾 Response</h3>
+  <div id="output" class="response"></div>
+  <button onclick="downloadAnswer()">📥 Download Response</button>
+
+  <script>
+    const API = location.origin;
+    let lastAnswer = "";
+
+    document.getElementById("uploadForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const form = new FormData();
+      const fileInput = document.getElementById("file");
+      for (let f of fileInput.files) form.append("files", f);
+      const res = await fetch(API + "/upload", {
+        method: "POST",
+        headers: { "x-api-key": "RAGLAB123" },
+        body: form
+      });
+      const data = await res.json();
+      alert("Upload Result: " + JSON.stringify(data));
+    };
+
+    document.getElementById("examples").onchange = function() {
+      document.getElementById("prompt").value = this.value;
+    };
+
+    async function submitPrompt() {
+      const prompt = document.getElementById("prompt").value;
+      const res = await fetch(API + "/query", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": "RAGLAB123"
+        },
+        body: JSON.stringify({ prompt })
+      });
+      const data = await res.json();
+      lastAnswer = data.response;
+      document.getElementById("output").innerText = lastAnswer;
+    }
+
+    function downloadAnswer() {
+      if (!lastAnswer) {
+        alert("Nothing to download yet.");
+        return;
+      }
+      const blob = new Blob([lastAnswer], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "raglab-response.txt";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

@@ -1,34 +1,26 @@
 {
   "info": {
-    "name": "RAG Lab API",
+    "name": "RAG Lab API - Final",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Check Model Status",
+      "name": "Check Status",
       "request": {
         "method": "GET",
-        "header": [],
         "url": {
-          "raw": "http://<your-api-endpoint>/status",
-          "protocol": "http",
-          "host": [
-            "<your-api-endpoint>"
-          ],
-          "path": [
-            "status"
-          ]
+          "raw": "http://<host>/status"
         }
       }
     },
     {
-      "name": "Upload Documents",
+      "name": "Upload Files",
       "request": {
         "method": "POST",
         "header": [
           {
-            "key": "Content-Type",
-            "value": "multipart/form-data"
+            "key": "x-api-key",
+            "value": "RAGLAB123"
           }
         ],
         "body": {
@@ -42,57 +34,83 @@
           ]
         },
         "url": {
-          "raw": "http://<your-api-endpoint>/upload",
-          "protocol": "http",
-          "host": [
-            "<your-api-endpoint>"
-          ],
-          "path": [
-            "upload"
-          ]
+          "raw": "http://<host>/upload"
         }
       }
     },
     {
-      "name": "Ask a Question",
+      "name": "Embed Raw Text",
       "request": {
         "method": "POST",
         "header": [
           {
             "key": "Content-Type",
             "value": "application/json"
+          },
+          {
+            "key": "x-api-key",
+            "value": "RAGLAB123"
           }
         ],
         "body": {
           "mode": "raw",
-          "raw": "{\n  \"question\": \"What is the document about?\"\n}"
+          "raw": "{\n  \"content\": \"Text to embed here\"\n}"
         },
         "url": {
-          "raw": "http://<your-api-endpoint>/query",
-          "protocol": "http",
-          "host": [
-            "<your-api-endpoint>"
-          ],
-          "path": [
-            "query"
-          ]
+          "raw": "http://<host>/embed"
         }
       }
     },
     {
-      "name": "Get Fun Prompt",
+      "name": "Query Model",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "x-api-key",
+            "value": "RAGLAB123"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"prompt\": \"What are the key takeaways?\"\n}"
+        },
+        "url": {
+          "raw": "http://<host>/query"
+        }
+      }
+    },
+    {
+      "name": "Clear Memory",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "RAGLAB123"
+          }
+        ],
+        "url": {
+          "raw": "http://<host>/clear"
+        }
+      }
+    },
+    {
+      "name": "Get History",
       "request": {
         "method": "GET",
-        "header": [],
+        "header": [
+          {
+            "key": "x-api-key",
+            "value": "RAGLAB123"
+          }
+        ],
         "url": {
-          "raw": "http://<your-api-endpoint>/fun-prompt",
-          "protocol": "http",
-          "host": [
-            "<your-api-endpoint>"
-          ],
-          "path": [
-            "fun-prompt"
-          ]
+          "raw": "http://<host>/history?n=5"
         }
       }
     }
