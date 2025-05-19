@@ -1,0 +1,126 @@
+{
+  "info": {
+    "name": "RAG Lab - Full API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Check Model Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://<your-api-endpoint>/status",
+          "protocol": "http",
+          "host": [
+            "<your-api-endpoint>"
+          ],
+          "path": [
+            "status"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Upload Documents (Files)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "multipart/form-data"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "files",
+              "type": "file",
+              "src": ""
+            }
+          ]
+        },
+        "url": {
+          "raw": "http://<your-api-endpoint>/upload",
+          "protocol": "http",
+          "host": [
+            "<your-api-endpoint>"
+          ],
+          "path": [
+            "upload"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Embed Raw Text",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"content\": \"This is raw text to be embedded into memory.\"\n}"
+        },
+        "url": {
+          "raw": "http://<your-api-endpoint>/embed",
+          "protocol": "http",
+          "host": [
+            "<your-api-endpoint>"
+          ],
+          "path": [
+            "embed"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Ask a Question",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"prompt\": \"Summarize the uploaded documents.\"\n}"
+        },
+        "url": {
+          "raw": "http://<your-api-endpoint>/query",
+          "protocol": "http",
+          "host": [
+            "<your-api-endpoint>"
+          ],
+          "path": [
+            "query"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Fun Prompt",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://<your-api-endpoint>/fun-prompt",
+          "protocol": "http",
+          "host": [
+            "<your-api-endpoint>"
+          ],
+          "path": [
+            "fun-prompt"
+          ]
+        }
+      }
+    }
+  ]
+}
