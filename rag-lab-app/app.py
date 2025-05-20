@@ -8,13 +8,15 @@ import os
 import json
 
 app = FastAPI()
+OLLAMA_MODEL = "gemma:2b"
+OLLAMA_HOST = "http://localhost:11434"
 API_KEY = "RAGLAB123"
 DATA_FILE = "documents.json"
 HISTORY_LIMIT = 50
 DEFAULT_MODEL = "gemma:2b"
+query_history = []
 uery_history = []
-if os.path.exists(DATA_FIL
-E):
+if os.path.exists(DATA_FILE):
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         documents = json.load(f)
 else:
