@@ -11,9 +11,10 @@ app = FastAPI()
 API_KEY = "RAGLAB123"
 DATA_FILE = "documents.json"
 HISTORY_LIMIT = 50
-query_history = []
-
-if os.path.exists(DATA_FILE):
+DEFAULT_MODEL = "gemma:2b"
+uery_history = []
+if os.path.exists(DATA_FIL
+E):
     with open(DATA_FILE, "r", encoding="utf-8") as f:
         documents = json.load(f)
 else:
@@ -52,7 +53,7 @@ async def api_key_check(request: Request, call_next):
 @app.get("/status")
 async def status():
     return {
-        "ollama_model": "mistral",
+        "ollama_model": DEFAULT_MODEL,
         "ollama_ready": True,
         "embedding_loaded": len(documents) > 0,
         "documents_indexed": len(documents),
