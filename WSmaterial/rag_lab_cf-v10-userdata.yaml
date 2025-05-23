@@ -1,6 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: RAG Lab with 50GiB single root volume (/dev/sda1) as boot
-
+Description: RAG Lab with 50GiB single root volume (/dev/sda1) /Complete with Ollama and FastAPI
 Parameters:
   KeyName:
     Type: AWS::EC2::KeyPair::KeyName
@@ -132,37 +131,65 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
+          set -euo pipefail
+          exec > >(tee /var/log/user-data.log | logger -t user-data -s 2>/dev/console) 2>&1
+          export DEBIAN_FRONTEND=noninteractive
           apt update -y
-          apt install -y git curl unzip software-properties-common python3-pip python3.10-venv
+          apt install -y \
+            git \
+            curl \
+            unzip \
+            software-properties-common \
+            python3-pip \
+            python3.10-venv \
+            python-is-python3 \
+            jq
 
-          # Install Ollama
-          curl -fsSL https://ollama.com/install.sh | sh
-
-          # Pull small model
-          su - ubuntu -c "ollama pull gemma:2b"
-
-          # Clone app
+          # Create working dir and clone repo
           mkdir -p /home/ubuntu/aieccws
           cd /home/ubuntu/aieccws
+          rm -rf aieccws/rag-lab-app || true
           git clone https://github.com/Shahosa/aieccws.git
           cd aieccws/rag-lab-app
 
-          # Python environment setup
+          # Setup Python venv and install dependencies
           python3 -m venv raglab-env
           source raglab-env/bin/activate
           pip install --upgrade pip
           pip install fastapi uvicorn python-multipart faiss-cpu httpx
 
-          # Prepare document store
-          touch documents.json
-          chown ubuntu:ubuntu documents.json
-          chmod 664 documents.json
+          # Create empty documents.json
+          echo "[]" > /home/ubuntu/aieccws/aieccws/rag-lab-app/documents.json
+          chown ubuntu:ubuntu /home/ubuntu/aieccws/aieccws/rag-lab-app/documents.json
+          chmod 664 /home/ubuntu/aieccws/aieccws/rag-lab-app/documents.json
 
-          # Launch Ollama and FastAPI
+          # Install Ollama
+          curl -fsSL https://ollama.com/install.sh | sh
+
+          # Start Ollama systemd service
+          systemctl enable ollama
+          systemctl start ollama
+
+          # Wait for Ollama to become responsive
+          for i in {1..10}; do
+            if curl -s http://127.0.0.1:11434/api/generate > /dev/null; then
+              echo "Ollama is ready"
+              break
+            else
+              echo "Waiting for Ollama..."
+              sleep 5
+            fi
+          done
+
+          # Pull models (run with HOME set, as ubuntu user)
+          sudo -u ubuntu HOME=/home/ubuntu ollama pull gemma:2b
+          sudo -u ubuntu HOME=/home/ubuntu ollama pull llama2:7b
+
+          # Start FastAPI app
           export HOME=/home/ubuntu
-          nohup ollama serve > /tmp/ollama.log 2>&1 &
-          sleep 10
-          nohup /home/ubuntu/aieccws/rag-lab-app/raglab-env/bin/uvicorn app:app --host 0.0.0.0 --port 8000 > /tmp/fastapi.log 2>&1 &
+          nohup /home/ubuntu/aieccws/aieccws/rag-lab-app/raglab-env/bin/uvicorn app:app --host 0.0.0.0 --port 8000 > /var/log/fastapi.log 2>&1 &
+          
+
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
