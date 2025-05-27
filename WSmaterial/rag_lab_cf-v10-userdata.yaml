@@ -134,6 +134,7 @@ Resources:
           set -euo pipefail
           exec > >(tee /var/log/user-data.log | logger -t user-data -s 2>/dev/console) 2>&1
           export DEBIAN_FRONTEND=noninteractive
+
           apt update -y
           apt install -y \
             git \
@@ -154,9 +155,9 @@ Resources:
 
           # Setup Python venv and install dependencies
           python3 -m venv raglab-env
-          source raglab-env/bin/activate
-          pip install --upgrade pip
-          pip install fastapi uvicorn python-multipart faiss-cpu httpx
+          chown -R ubuntu:ubuntu raglab-env
+          sudo -u ubuntu bash -c "source raglab-env/bin/activate && pip install --upgrade pip"
+          sudo -u ubuntu bash -c "source raglab-env/bin/activate && pip install fastapi uvicorn python-multipart faiss-cpu httpx pymupdf python-docx"
 
           # Create empty documents.json
           echo "[]" > /home/ubuntu/aieccws/aieccws/rag-lab-app/documents.json
@@ -188,7 +189,6 @@ Resources:
           # Start FastAPI app
           export HOME=/home/ubuntu
           nohup /home/ubuntu/aieccws/aieccws/rag-lab-app/raglab-env/bin/uvicorn app:app --host 0.0.0.0 --port 8000 > /var/log/fastapi.log 2>&1 &
-          
 
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup

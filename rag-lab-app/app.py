@@ -123,6 +123,10 @@ async def embed_text(req: EmbedRequest):
     save_documents()
     return {"message": "Document embedded successfully", "total_documents": len(documents)}
 
+class QueryRequest(BaseModel):
+    prompt: str
+    use_rag: Optional[bool] = True
+
 @app.post("/query")
 async def query_model(req: QueryRequest):
     if req.use_rag and documents:
