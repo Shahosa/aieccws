@@ -183,7 +183,6 @@ Resources:
           done
 
           # Pull models (run with HOME set, as ubuntu user)
-          sudo -u ubuntu HOME=/home/ubuntu ollama pull phi:2
           #sudo -u ubuntu HOME=/home/ubuntu ollama pull llama2:7b
           sudo -u ubuntu HOME=/home/ubuntu ollama pull tinyllama
 
