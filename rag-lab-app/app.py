@@ -17,7 +17,7 @@ OLLAMA_HOST = "http://localhost:11434"
 API_KEY = "RAGLAB123"
 DATA_FILE = "documents.json"
 HISTORY_LIMIT = 50
-DEFAULT_MODEL = "gemma:2b"
+DEFAULT_MODEL = "phi:2"
 query_history = []
 uery_history = []
 
@@ -81,13 +81,13 @@ async def api_key_check(request: Request, call_next):
 async def get_status():
     try:
         async with httpx.AsyncClient() as client:
-            response = await client.post("http://localhost:11434/api/generate", json={"model": "gemma:2b", "prompt": "ping"})
+            response = await client.post("http://localhost:11434/api/generate", json={"model": "phi:2", "prompt": "ping"})
             is_ready = "error" not in response.text.lower()
     except:
         is_ready = False
 
     return {
-        "ollama_model": "gemma:2b",
+        "ollama_model": "phi:2",
         "ollama_ready": is_ready,
         "embedding_loaded": bool(documents),
         "documents_indexed": len(documents),
@@ -140,7 +140,7 @@ async def query_model(req: QueryRequest):
         async with httpx.AsyncClient() as client:
             response = await client.post(
                 "http://localhost:11434/api/generate",
-                json={"model": "gemma:2b", "prompt": full_prompt}
+                json={"model": "phi:2", "prompt": full_prompt}
             )
             result = response.json()
         answer = result.get("response", "No answer returned")
