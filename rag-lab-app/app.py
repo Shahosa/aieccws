@@ -1,4 +1,4 @@
-from fastapi import FastAPI, UploadFile, File, Request
+from fastapi import FastAPI, UploadFile, File, Request, HTTPException
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 from typing import List,Optional
@@ -17,10 +17,8 @@ OLLAMA_HOST = "http://localhost:11434"
 API_KEY = "RAGLAB123"
 DATA_FILE = "documents.json"
 HISTORY_LIMIT = 50
-DEFAULT_MODEL = "tinyllama"
+DEFAULT_MODEL = OLLAMA_MODEL
 query_history = []
-uery_history = []
-
 
 if os.path.exists(DATA_FILE):
     with open(DATA_FILE, "r", encoding="utf-8") as f:
@@ -81,19 +79,18 @@ async def api_key_check(request: Request, call_next):
 async def get_status():
     try:
         async with httpx.AsyncClient() as client:
-            response = await client.post("http://localhost:11434/api/generate", json={"model": "tinyllama", "prompt": "ping"})
+            response = await client.post("http://localhost:11434/api/generate", json={"model": OLLAMA_MODEL, "prompt": "ping"})
             is_ready = "error" not in response.text.lower()
     except:
         is_ready = False
 
     return {
-        "ollama_model": "tinyllama",
+        "ollama_model": OLLAMA_MODEL,
         "ollama_ready": is_ready,
         "embedding_loaded": bool(documents),
         "documents_indexed": len(documents),
         "uptime_seconds": round(os.times().elapsed, 2)
     }
-
 
 @app.post("/upload")
 async def upload_files(files: List[UploadFile] = File(...)):
@@ -116,7 +113,6 @@ async def upload_files(files: List[UploadFile] = File(...)):
         json.dump(documents, f)
     return {"message": "Files uploaded and embedded", "documents_indexed": indexed, "documents_skipped": skipped}
 
-
 @app.post("/embed")
 async def embed_text(req: EmbedRequest):
     documents.append(req.content)
@@ -137,13 +133,20 @@ async def query_model(req: QueryRequest):
         full_prompt = req.prompt
 
     try:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=60.0) as client:
             response = await client.post(
-                "http://localhost:11434/api/generate",
-                json={"model": "tinyllama", "prompt": full_prompt}
+                OLLAMA_HOST,
+                json={"model": OLLAMA_MODEL, "prompt": full_prompt}
             )
+            response.raise_for_status()  # raise exception for non-200s
             result = response.json()
+
         answer = result.get("response", "No answer returned")
+
+    except httpx.RequestError as e:
+        raise HTTPException(status_code=503, detail=f"Ollama request failed: {e}")
+    except httpx.HTTPStatusError as e:
+        raise HTTPException(status_code=502, detail=f"Ollama returned HTTP error: {e}")
     except Exception as e:
         answer = f"[Error communicating with Ollama: {str(e)}]"
 
@@ -153,6 +156,7 @@ async def query_model(req: QueryRequest):
         "context_used": context,
         "response": answer
     }
+
     query_history.append(entry)
     if len(query_history) > HISTORY_LIMIT:
         query_history.pop(0)
