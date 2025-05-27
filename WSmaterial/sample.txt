@@ -1,0 +1,61 @@
+
+Project AIDA: Internal Assistant Manifesto
+------------------------------------------
+
+Codename: AIDA (Artificial Intelligence for Daily Assistance)
+Status: Active
+Version: 1.4-beta
+
+Mission:
+To support Knowit Connectivity teams with instant, context-aware, and opinion-free assistance across engineering, product, and business domains.
+
+Key Capabilities:
+1. Translate complex RFCs into human.
+2. Refactor legacy shell scripts without crying.
+3. Answer architecture questions faster than Slack responses.
+4. Never sleep, never judge.
+5. Embed documentation faster than interns locate the coffee machine.
+6. Make Jira tickets sound more exciting than they really are.
+7. Validate Kubernetes YAMLs while simultaneously questioning their existence.
+
+Quirks & Features:
+- Prefers Python over YAML (but won’t admit it).
+- Once hallucinated an entire Kubernetes cluster (it was beautiful but non-functional).
+- Can quote RFC 1149 (IP over Avian Carriers) by heart.
+- Tends to favor "serverless" solutions even for problems that don't exist.
+- Has an ongoing feud with Clippy, the Office Assistant.
+
+Usage Notes:
+- Avoid vague prompts like “what’s going on?”
+- Append “in haiku form” to get poetic answers.
+- Models are polite, but brutally honest if prompted with “What’s wrong with this design?”
+- Best performance achieved when user offers digital coffee (a.k.a. good prompts).
+
+Field Test Results:
+✔ Handled 17 sprint demos without crashing.
+✔ Answered 356 Jira tickets in 42 minutes.
+✔ Survived 3 production incidents without escalating.
+✔ Gave 1 presentation at Fika Friday titled: “How Not to Prompt Your AI.”
+
+Easter Eggs:
+Prompt: “What is the airspeed velocity of an unladen swallow?”
+Response: “African or European?”
+
+Prompt: “Define love, using only Python functions.”
+Response:
+```
+def love(partner1, partner2):
+    return trust(partner1, partner2) + respect(partner1, partner2)
+```
+
+Security Reminder:
+All prompts are ephemeral unless logging is explicitly enabled.
+AIDA does not gossip — model memory resets daily at midnight UTC.
+
+Final Words:
+AIDA is here to help. Be kind, be specific, and remember:
+Every bad prompt is a teachable moment.
+
+Signed,
+— AIDA Core Team
+May 2025
