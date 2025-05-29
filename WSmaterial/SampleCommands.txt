@@ -1,0 +1,62 @@
+
+# OLLAMA LOCAL MODEL INTERACTION GUIDE
+# =====================================
+# Use this guide to test and interact with your locally running Ollama model.
+# Ensure Ollama is installed and the model (e.g., tinyllama) is pulled before proceeding.
+
+------------------------------------------------------------
+🔍 1. Check if Ollama is Running
+------------------------------------------------------------
+This command checks if the Ollama API is reachable and running on localhost.
+
+curl http://localhost:11434
+
+------------------------------------------------------------
+📦 2. List Available Models
+------------------------------------------------------------
+Displays all models currently pulled and available in your local Ollama installation.
+
+curl http://localhost:11434/api/tags
+
+------------------------------------------------------------
+🤖 3. Run a Simple Prompt
+------------------------------------------------------------
+Sends a basic prompt to the model and gets a streamed response. Replace the prompt as needed.
+
+curl -X POST http://localhost:11434/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{
+        "model": "tinyllama",
+        "prompt": "What is the capital of Sweden?"
+      }'
+
+------------------------------------------------------------
+🚀 4. Test Response Time (Model Warm-Up)
+------------------------------------------------------------
+Useful for benchmarking how long it takes to respond (cold vs warm start). 
+The first call will be slow while Ollama loads the model into memory.
+
+time curl -s -X POST http://localhost:11434/api/generate \
+  -H "Content-Type: application/json" \
+  -d '{"model": "tinyllama", "prompt": "Hello"}'
+
+------------------------------------------------------------
+🧹 5. Unload a Model
+------------------------------------------------------------
+Frees memory by unloading a model from active use. You can simulate a cold start by unloading.
+
+curl -X POST http://localhost:11434/api/unload \
+  -H "Content-Type: application/json" \
+  -d '{"model": "tinyllama"}'
+
+------------------------------------------------------------
+⚙️ 6. Show Ollama System Status
+------------------------------------------------------------
+Shows runtime metadata: loaded model, system usage, threads, etc.
+
+curl http://localhost:11434/api/show
+
+------------------------------------------------------------
+✅ Done!
+------------------------------------------------------------
+You’ve now learned how to validate, prompt, and manage your local Ollama setup.

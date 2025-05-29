@@ -135,7 +135,7 @@ async def query_model(req: QueryRequest):
     try:
         async with httpx.AsyncClient(timeout=60.0) as client:
             response = await client.post(
-                OLLAMA_HOST,
+                f"{OLLAMA_HOST}/api/generate",
                 json={"model": OLLAMA_MODEL, "prompt": full_prompt}
             )
             response.raise_for_status()  # raise exception for non-200s
